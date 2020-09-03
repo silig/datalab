@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use App\Models\Jurusan;
+use Illuminate\Database\Seeder;
 
 class JurusanTableSeeder extends Seeder
 {

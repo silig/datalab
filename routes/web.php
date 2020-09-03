@@ -55,4 +55,11 @@ Route::group(['prefix' => config('adminlte.dashboard_url'), 'middleware' => 'aut
 	    Route::any('/{id}/edit', 'Admin\MenusController@edit')->middleware('can:edit-menus');
 	    Route::get('/{id}/delete', 'Admin\MenusController@delete')->middleware('can:delete-menus');
 	});
+
+	Route::group(['prefix' => 'data'], function () {
+		Route::get('/', 'Admin\DataController@index')->middleware('can:view-menus');
+		Route::any('/create', 'Admin\MenusController@create')->middleware('can:create-menus');
+	    Route::any('/{id}/edit', 'Admin\MenusController@edit')->middleware('can:edit-menus');
+	    Route::get('/{id}/delete', 'Admin\MenusController@delete')->middleware('can:delete-menus');
+	});
 });

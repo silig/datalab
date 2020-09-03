@@ -97,9 +97,9 @@
                     @yield('content_top_nav_right')
                     @if(Auth::user())
                         <li class="nav-item dropdown">
-                            <a class="nav-link" data-toggle="dropdown" href="#" >
-                              <i class="fas fa-fw fa-user" style="padding-right: 4rem;width: none">{{Auth::user()->username}}</i>
-                              
+                            <a class="nav-link" data-toggle="dropdown" href="#" style="font-weight: bold;">
+                              <i class="fas fa-fw fa-user"></i>
+                              {{Auth::user()->username}}
                             </a>
                             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                               
