@@ -33,9 +33,17 @@ class UsersController extends Controller
         }
         return $rule;
     }
+
+    protected function pesan(){
+        $pesan['username.required'] = 'Nama tidak boleh kosong';
+        $pesan['username.unique'] = 'Nama sudah ada';
+
+        return $pesan;
+    }
  
     public function index(Request $request){
     	if ($request->ajax()){
+            
             return DataTables::of($this->model->dataTable())->toJson();
         }
 
@@ -46,7 +54,7 @@ class UsersController extends Controller
     {
         if ($request->isMethod('post')) {
 
-            $validation = Validator::make($request->all(), $this->validationRules());
+            $validation = Validator::make($request->all(), $this->validationRules(),$this->pesan());
             if ($validation->fails()) {
                 return redirect()->back()->withInput()->withErrors($validation->errors());
             }
@@ -69,7 +77,7 @@ class UsersController extends Controller
     {
         if ($request->isMethod('post')) {
 
-            $validation = Validator::make($request->all(), $this->validationRules('edit', $id));
+            $validation = Validator::make($request->all(), $this->validationRules('edit', $id),$this->pesan());
             if ($validation->fails()) {
                 return redirect()->back()->withInput()->withErrors($validation->errors());
             }

@@ -32,15 +32,11 @@ class DataRepository
 
 	public function create($params = [])
     {
+
         DB::beginTransaction();
 
         $model = $this->model;
-        $model->username = $params['username'];
-        // $model->email = $params['email'];
-        // $model->phone = $params['phone'];
-        $model->password = bcrypt($params['password']);
-        $model->role_id = $params['role_id'];
-        $model->active = !empty($params['active']) ? $params['active'] : Status::INACTIVE;
+        $model->nama_folder = $params['nama_folder'];
         $model->save();
 
         DB::commit();
@@ -51,14 +47,7 @@ class DataRepository
     {
         DB::beginTransaction();
         $model = $this->model->find($id);
-        $model->username = $params['username'];
-        // $model->email = $params['email'];
-        // $model->phone = $params['phone'];
-        if (!empty($params['password'])) {
-           $model->password = bcrypt($params['password']);
-        }
-        $model->role_id = $params['role_id'];
-        $model->active = !empty($params['active']) ? $params['active'] : Status::INACTIVE;
+        $model->nama_folder = $params['nama_folder'];
         $model->save();
 
         DB::commit();

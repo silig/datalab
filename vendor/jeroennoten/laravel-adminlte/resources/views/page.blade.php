@@ -89,6 +89,11 @@
                             <span class="sr-only">{{ __('adminlte::adminlte.toggle_navigation') }}</span>
                         </a>
                     </li>
+                    <li class="nav-item d-none d-sm-inline-block">
+                        
+                        <a class="nav-link"><strong>{{Tanggal::indo(date("Y-m-d H:i:s"))}}</strong>
+                            <strong id="jam"></strong></a>
+                    </li>
                     @each('adminlte::partials.menu-item-top-nav', $adminlte->menu(), 'item')
                     @yield('content_top_nav_left')
                 </ul>
@@ -120,6 +125,13 @@
                                 {{ csrf_field() }}
                             </form>
                             </div>
+                        </li>
+                    @else if(Auth::user() == false)
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">
+                                <i class="fa fa-fw fa-power-on"></i>Login
+                            </a>
+                            
                         </li>
                     @endif
                     @if(config('adminlte.right_sidebar'))
@@ -198,6 +210,26 @@
 
 @section('adminlte_js')
     <script src="{{ asset('vendor/adminlte/dist/js/adminlte.min.js') }}"></script>
+    <script type="text/javascript">
+     window.onload = function() { jam(); }
+
+     function jam() {
+      var e = document.getElementById('jam'),
+      d = new Date(), h, m, s;
+      h = d.getHours();
+      m = set(d.getMinutes());
+      s = set(d.getSeconds());
+
+      e.innerHTML = h +':'+ m +':'+ s;
+
+      setTimeout('jam()', 1000);
+     }
+
+     function set(e) {
+      e = e < 10 ? '0'+ e : e;
+      return e;
+     }
+    </script>
     @stack('js')
     @yield('js')
 @stop

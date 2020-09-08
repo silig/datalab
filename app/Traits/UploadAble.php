@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use File;
 
 /**
  * Trait UploadAble
@@ -36,5 +37,20 @@ trait UploadAble
     public function deleteOne($path = null, $disk = 'public')
     {
         Storage::disk($disk)->delete($path);
+    }
+
+    public function UploadFile(UploadedFile $file, $folder)
+    {
+        $NamaFile = preg_replace('/\s+/', '_', time(). ' '. $folder . ' ' .$file->getClientOriginalName());
+        $path = Storage_path('App/public/Data/'.$folder);
+
+        if (!File::isDirectory($path)) {
+            File::makeDirectory($path, 0777, true, true);
+        } 
+        //Image::make($file)->resize(250, 300)->save($path . '/' . $NamaFile);
+        $file->storeas('public/Data/'.$folder ,$NamaFile);
+        
+        
+        return $NamaFile;
     }
 }

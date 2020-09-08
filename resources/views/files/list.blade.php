@@ -3,7 +3,7 @@
 @section('title', 'Menus')
 
 @section('content_header')
-    <h1>Data</h1>
+    <h1>Data {{$folder->nama_folder}}</h1>
 @stop
 
 @section('content')
@@ -20,28 +20,30 @@
 			    <div class="col-12">
 	               <table class="table table-bordered table-striped">
 		                <tr>
-		                    <th width="60%" style="text-align: center;">Folder</th>
-		                    <th width="40%" style="text-align: center;">Action</th>
+		                    <th width="40%" style="text-align: center;">Nama Files</th>
+		                    <th width="40%" style="text-align: center;">Data Files</th>
+		                    <th width="20%" style="text-align: center;">Action</th>
 		                </tr>
-		                @foreach($menus as $menu)
+		                @foreach($file as $files)
 		                    <tr>
-		                        <td>{!! $menu['nama_folder'] !!}</td>
+		                        <td>{!! $files->nama_data !!}</td>
+		                        <td>{!! $files->file !!}</td>
 		                        <td style="text-align: center;">
 		                        	@can('edit-menus')
-		            				<a href="data/{{$menu['id']}}/files" class="btn btn-info btn-xs">open</a>
+		            				<a href="files/{{$files['id']}}/edit" class="btn btn-info btn-xs">open</a>
 		            				@endcan
 
 		                        	@can('edit-menus')
-		            				<a href="#" data-toggle="modal" data-target="#modal-edit{{$menu['id']}}" class="btn btn-info btn-xs">edit</a>
+		            				<a href="#" data-toggle="modal" data-target="#modal-edit{{$files['id']}}" class="btn btn-info btn-xs">edit</a>
 		            				@endcan
 		            	
 					            	@can('delete-menus')
-					            	<a href="data/{{$menu['id']}}/delete" class="btn btn-info btn-xs" onclick="confirmation(event)">delete</a>
+					            	<a href="{{ route('delete_file', [ $folder->id, $files['id']]) }}" class="btn btn-info btn-xs" onclick="confirmation(event)">delete</a>
 					            	@endcan
 		                        </td>
 		                    </tr>
 
-		                    <div class="modal fade" id="modal-edit{{$menu['id']}}" style="display: none;" aria-hidden="true">
+		                    <div class="modal fade" id="modal-edit{{$files['id']}}" style="display: none;" aria-hidden="true">
 						        <div class="modal-dialog">
 						          <div class="modal-content">
 						            <div class="modal-header">
@@ -51,13 +53,13 @@
 						              </button>
 						            </div>
 						            <div class="modal-body">
-						              <form class="edit" action="{{route('edit_data', [$menu['id']] )}}" method="post">
+						              <form action="#" method="post" enctype="multipart/form-data">
 						              	@csrf
 						              	<div class="row">
 									  		<div class="col-12">
 												<div class="form-group">
 										    		<label>Folder Name*</label>
-										    		<input type="text" name="nama_folder" class="form-control" value="{!! $menu['nama_folder'] !!}">
+										    		<input type="text" name="nama_folder" class="form-control" value="{!! $files['nama_folder'] !!}">
 										  		</div>
 									  		</div>
 							  			</div>
@@ -69,7 +71,6 @@
 						            </div>
 						            </form>
 						          </div>
-
 						        </div>
 						    </div>
 		                @endforeach
@@ -84,19 +85,33 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title">Tambah Folder</h4>
+              <h4 class="modal-title">Tambah File</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">×</span>
               </button>
             </div>
             <div class="modal-body">
-              <form class="buat" id="form-folder" action="{{route('input_data')}}" method="post">
+              <form id="form-folder" action="{{route('input_file')}}" method="post" enctype="multipart/form-data">
               	@csrf
               	<div class="row">
 			  		<div class="col-12">
 						<div class="form-group">
-				    		<label>Folder Name*</label>
-				    		<input type="text" name="nama_folder" class="form-control">
+				    		<label>Nama File*</label>
+				    		<input type="text" name="nama_file" class="form-control">
+				    		<input type="text" name="id_folder" class="form-control" value="{{$folder->id}}" hidden="">
+				  		</div>
+			  		</div>
+	  			</div>
+
+	  			<div class="row">
+			  		<div class="col-12">
+						<div class="form-group">
+				    		<label>File*<small><i></i></small></label></label> <br>
+				    		
+				    		<div class="custom-file">
+		                      <input type="file" class="custom-file-input" id="customFile" name="file">
+		                      <label class="custom-file-label" for="customFile">Choose file</label>
+		                    </div>
 				  		</div>
 			  		</div>
 	  			</div>
@@ -117,9 +132,21 @@
 @section('plugins.Sweetalert2', true)
 
 @section('js')
-<script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.min.js')}}"></script>
-{!! $validator->selector('.buat') !!}
-{!! $validator->selector('.edit') !!}
+<script src="{{ asset('vendor/bs-custom-file-input/bs-custom-file-input.min.js')}}"></script>
+<script type="text/javascript">
+	$(document).ready(function () {
+	  bsCustomFileInput.init();
+	});
+</script>
+@if(!empty($successMessage = \Illuminate\Support\Facades\Session::get('salah')))
+    <script>
+        $(function () {
+            @if($successMessage)
+                alert('{{ $successMessage }}');
+            @endif
+        });
+    </script>
+@endif
     <script>
     	$(function() {
     		alertAutoCLose()

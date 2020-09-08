@@ -12,7 +12,7 @@ class Data extends Model
         'nama_data', 'file'
     ];
 
-    public function data()
+    public function folder()
     {
     	return $this->belongsTo('App\Models\Folder');
     }

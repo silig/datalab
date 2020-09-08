@@ -38,7 +38,7 @@
 
 <form id="accesspanel" action="{{ $login_url }}" method="post">
   {{ csrf_field() }}
-  <h1 id="litheader">Surat dan Rapat</h1>
+  <h1 id="litheader">Laboratorium</h1>
   <div class="inset">
     <p>
       <input type="text" name="username" id="email" placeholder="username">

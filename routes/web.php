@@ -11,13 +11,16 @@
 |
 */
 
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+// Route::get('/', function () {
+//     //return redirect()->route('login');
+//     return view('dashboard');
+// });
+
+Route::get('/', 'DashboardController@index');
+Route::get('/files/{id}', 'DashboardController@files');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index');
 Route::get('/product/{slug}', 'Site\ProductController@index');
 
 
@@ -57,9 +60,12 @@ Route::group(['prefix' => config('adminlte.dashboard_url'), 'middleware' => 'aut
 	});
 
 	Route::group(['prefix' => 'data'], function () {
-		Route::get('/', 'Admin\DataController@index')->middleware('can:view-menus');
-		Route::any('/create', 'Admin\MenusController@create')->middleware('can:create-menus');
-	    Route::any('/{id}/edit', 'Admin\MenusController@edit')->middleware('can:edit-menus');
-	    Route::get('/{id}/delete', 'Admin\MenusController@delete')->middleware('can:delete-menus');
+		Route::get('/', 'Admin\DataController@index')->middleware('can:view-data');
+		Route::post('/create', 'Admin\DataController@create')->middleware('can:create-data')->name('input_data');
+	    Route::post('/{id}/edit', 'Admin\DataController@edit')->middleware('can:edit-data')->name('edit_data');
+	    Route::get('/{id}/delete', 'Admin\DataController@delete')->middleware('can:delete-data');
+	    Route::get('/{id}/files', 'Admin\DataController@files');
+	    Route::post('/create/files', 'Admin\DataController@createFiles')->name('input_file');
+	    Route::get('{folder}/files/{id}/delete', 'Admin\DataController@deleteFiles')->name('delete_file');
 	});
 });

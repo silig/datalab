@@ -8,56 +8,64 @@ use App\Http\Controllers\Controller;
 use DataTables;
 use Validator;
 use JsValidator;
+use App\Models\Folder;
+use App\Models\Data;
+use App\Traits\UploadAble;
+use Illuminate\Http\UploadedFile;
+use File;
 
 class DataController extends Controller
 {
     protected $model;
+    use UploadAble;
+
 
     public function __construct(
-        UserRepository $user
+        DataRepository $data
     ) {
-        $this->model = $user;
+        $this->model = $data;
     }
 
     protected function validationRules($scope = 'create', $id = 0) {
-        $rule['nama_folder'] = 'required|unique:data'. ($id ? ",id,$id" : '');
+        //unique:users'. ($id ? ",id,$id" : '');
+        $rule['nama_folder'] = 'required|unique:folder'. ($id ? ",id,$id" : '');
         return $rule;
+    }
+
+    protected function pesan(){
+        $pesan['nama_folder.required'] = 'Nama Folder Tidak Boleh Kosong';
+
+        return $pesan;
     }
  
     public function index(Request $request){
-        if ($request->ajax()){
-            return DataTables::of($this->model->dataTable())->toJson();
-        }
+        $menus = Folder::orderBy('id')->get();
+        $validator = JsValidator::make($this->validationRules(), $this->pesan());
 
-        return view('data.list');
+        return view('data.list', compact('menus', 'validator'));
     }
 
     public function create(Request $request)
     {
-        if ($request->isMethod('post')) {
+        
 
-            $validation = Validator::make($request->all(), $this->validationRules());
+            $validation = Validator::make($request->all(), $this->validationRules(), $this->pesan());
             if ($validation->fails()) {
                 return redirect()->back()->withInput()->withErrors($validation->errors());
             }
 
             try {
                 $this->model->create($request->all());
-                return redirect()->action('Admin\UsersController@index')->with('success', 'Data has been saved');
+                return redirect()->action('Admin\DataController@index')->with('success', 'Data has been saved');
             } catch (\Exception $e) {
                 return redirect()->back()->withInput()->withErrors($e->getMessage());
             }
-        }
-
-        $roles = $this->role->getOptions();
-        $validator = JsValidator::make($this->validationRules());
-
-        return view('users.form', compact('roles','validator'));
+        
     }
 
     public function edit($id, Request $request)
     {
-        if ($request->isMethod('post')) {
+       
 
             $validation = Validator::make($request->all(), $this->validationRules('edit', $id));
             if ($validation->fails()) {
@@ -65,36 +73,79 @@ class DataController extends Controller
             }
 
             try {
-                if($id==1){
-                return redirect()->action('Admin\UsersController@index')->with('danger', 'Sorry boss SuperAdmin tidak dapat diubah');
-            } 
-            else {
+                          
                 $this->model->update($id, $request->all());
-                return redirect()->action('Admin\UsersController@index')->with('success', 'Data has been updated');
-            }
+                return redirect()->action('Admin\DataController@index')->with('success', 'Data has been updated');
+            
             } catch (\Exception $e) {
                 return redirect()->back()->withInput()->withErrors($e->getMessage());
             }
-        }
-
-        $roles = $this->role->getOptions();
-        $validator = JsValidator::make($this->validationRules('edit', $id));
-        $model = $this->model->find($id);
-
-        return view('users.form', compact('model','roles','validator'));
+        
+        
     }
 
     public function delete($id) 
     {   
         
         try {
-            if($id==1){
-                return redirect()->action('Admin\UsersController@index')->with('danger', 'Sorry boss SuperAdmin tidak dapat dihapus');
-            } 
-            else {
+            
+          
                 $this->model->destroy($id);
-                return redirect()->action('Admin\UsersController@index')->with('success', 'Data has been deleted');
-            }
+                return redirect()->action('Admin\DataController@index')->with('success', 'Data has been deleted');
+            
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->withErrors($e->getMessage());
+        }
+    }
+
+    public function files($id){
+
+        try {
+                $file = Data::where('folder_id', $id)->get();
+                $folder = Folder::find($id);
+
+                if($folder){
+                    return view('files.list', compact('file', 'folder'));
+                }else{
+                    return redirect()->back()->with('salah', 'Ora enek datane boss!!!');
+                }
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->withErrors($e->getMessage());
+        }
+
+    }
+
+    public function createFiles(Request $request){
+        //dd($request->all());
+        $folder = Folder::find($request->id_folder);
+        if($folder == false){
+            return redirect()->back()->withInput()->withErrors('maaf sepertinya terjadi kesalahan');
+        } else {
+            try{
+                $files = new Data;
+                $Upload = $this->UploadFile($request->file, $folder->nama_folder);
+                $files->nama_data = $request->nama_file;
+                $files->file = $Upload;
+                $files->folder_id = $request->id_folder;
+                $files->save();
+
+                return redirect()->back()->with('success', 'Data has been updated');
+
+            } catch (\Exception $e){
+                return redirect()->back()->withInput()->withErrors($e->getMessage());
+            }    
+
+        }
+    }
+
+    public function deleteFiles($folder, $id) 
+    {   
+        $folder = Folder::find($folder);
+        try {   
+                $files = Data::find($id);
+                $this->deleteOne('Data/'.$folder->nama_folder.'/'.$files->file);
+                $files->destroy($id);
+                return redirect()->back()->with('success', 'Data has been deleted');
         } catch (\Exception $e) {
             return redirect()->back()->withInput()->withErrors($e->getMessage());
         }

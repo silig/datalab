@@ -29,12 +29,12 @@ return [
     |
     */
 
-    'logo' => '<b>Surat & Rapat</b>',
+    'logo' => '<b>Setifikasi Lab.</b>',
     'logo_img' => 'image/Undip.png',
     'logo_img_class' => 'brand-image-xl',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'AdminLTE',
+    'logo_img_alt' => 'Undip',
 
     /*
     |--------------------------------------------------------------------------
@@ -67,13 +67,13 @@ return [
     */
 
     'classes_body' => '',
-    'classes_brand' => 'bg-info elevation-2',
+    'classes_brand' => 'bg-green elevation-2',
     'classes_brand_text' => '',
     'classes_content_header' => 'container-fluid',
     'classes_content' => 'container-fluid',
-    'classes_sidebar' => 'sidebar-light-info elevation-4',
+    'classes_sidebar' => 'sidebar-light-green elevation-4',
     'classes_sidebar_nav' => '',
-    'classes_topnav' => 'navbar-info navbar-light',
+    'classes_topnav' => 'navbar-green navbar-light',
     'classes_topnav_nav' => 'navbar-expand-md',
     'classes_topnav_container' => 'container',
 
@@ -90,7 +90,7 @@ return [
     */
 
     'sidebar_mini' => true,
-    'sidebar_collapse' => false,
+    'sidebar_collapse' => true,
     'sidebar_collapse_auto_size' => false,
     'sidebar_collapse_remember' => false,
     'sidebar_collapse_remember_no_transition' => true,

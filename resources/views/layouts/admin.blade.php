@@ -44,7 +44,7 @@
 @stop
 
 @section('css')
-    <link rel="stylesheet" href="/css/admin_custom.css">
+    
     <style type="text/css">
     	.action-button{
     		font-size: 12px;
