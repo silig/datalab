@@ -32,3 +32,9 @@
       </ul>
     </div>
   </nav>
+
+  <nav class="main-header navbar navbar-expand navbar-info navbar-info">
+    <div class="container">
+        @yield('coba')
+    </div>
+  </nav>

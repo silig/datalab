@@ -40,6 +40,10 @@
         <!-- /.row -->
 @endsection
 
+@section('coba')
+<marquee class="text-{{$a[rand(0,7)]}}">{{Tanggal::indo(date("Y-m-d H:i:s"))}}. <a id="jam"></a></marquee>
+@stop
+
 @section('js')
 <script type="text/javascript">
      window.onload = function() { jam(); }

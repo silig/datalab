@@ -29,13 +29,7 @@
 		                        <td>{!! $files->nama_data !!}</td>
 		                        <td>{!! $files->file !!}</td>
 		                        <td style="text-align: center;">
-		                        	@can('edit-menus')
-		            				<a href="files/{{$files['id']}}/edit" class="btn btn-info btn-xs">open</a>
-		            				@endcan
-
-		                        	@can('edit-menus')
-		            				<a href="#" data-toggle="modal" data-target="#modal-edit{{$files['id']}}" class="btn btn-info btn-xs">edit</a>
-		            				@endcan
+		                        	
 		            	
 					            	@can('delete-menus')
 					            	<a href="{{ route('delete_file', [ $folder->id, $files['id']]) }}" class="btn btn-info btn-xs" onclick="confirmation(event)">delete</a>
